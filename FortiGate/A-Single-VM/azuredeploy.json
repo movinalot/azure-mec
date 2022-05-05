@@ -2,6 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "edgeZone": {
+        "type": "string"
+    },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -471,6 +474,10 @@
       "apiVersion": "2020-11-01",
       "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
+      "extendedLocation": {
+          "type": "EdgeZone",
+          "name": "[parameters('edgeZone')]"
+      },
       "dependsOn": [
         "[variables('routeTableProtectedId')]"
       ],
@@ -555,6 +562,10 @@
       },
       "name": "[variables('publicIP1Name')]",
       "location": "[parameters('location')]",
+      "extendedLocation": {
+          "type": "EdgeZone",
+          "name": "[parameters('edgeZone')]"
+      },
       "sku": {
         "name": "[parameters('publicIP1SKU')]"
       },
@@ -573,6 +584,10 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgtNic1Name')]",
       "location": "[parameters('location')]",
+      "extendedLocation": {
+          "type": "EdgeZone",
+          "name": "[parameters('edgeZone')]"
+      },
       "dependsOn": [
         "[variables('vnetName')]",
         "[variables('NSGId')]"
@@ -606,6 +621,10 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('fgtNic2Name')]",
       "location": "[parameters('location')]",
+      "extendedLocation": {
+          "type": "EdgeZone",
+          "name": "[parameters('edgeZone')]"
+      },
       "dependsOn": [
         "[variables('vnetName')]"
       ],
@@ -640,6 +659,10 @@
         "type": "SystemAssigned"
       },
       "location": "[parameters('location')]",
+      "extendedLocation": {
+          "type": "EdgeZone",
+          "name": "[parameters('edgeZone')]"
+      },
       "plan": {
         "name": "[parameters('fortiGateImageSKU')]",
         "publisher": "[variables('imagePublisher')]",
@@ -692,12 +715,6 @@
               "id": "[variables('fgtNic2Id')]"
             }
           ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": "[variables('serialConsoleEnabled')]",
-            "storageUri": "[if(equals(parameters('serialConsole'), 'yes'), reference(variables('serialConsoleStorageAccountName'), '2021-08-01').primaryEndpoints['blob'], json('null'))]"
-          }
         }
       }
     }
@@ -713,4 +730,3 @@
     }
   }
 }
-
